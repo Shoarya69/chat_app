@@ -1,0 +1,11 @@
+__pycache__
+.vscode
+backendlog.txt
+frontendlog.txt
+localhost.session.sql
+locallhost1.session.sql
+run.sh
+setup.mongodb.js
+stop.sh
+*.sql
+*.env
