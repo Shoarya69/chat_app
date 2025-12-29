@@ -5,6 +5,6 @@ export default class basecss{
     static loginout_btn = "btn btn-primary bg-red-500 hover:bg-red-1900";
 
     static nav_div = "navbar-end"
-    static cont_btn = "btn btn-secondery"
+    static cont_btn = "btn btn-primary mr-4"
     static gree = "text-4xl font-white text-white bg-base-100";
 }

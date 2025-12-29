@@ -4,9 +4,13 @@ export default async function fetchNotifications(token){
                 const data = await res.json();
 
                 if (data.Notfi) {
+                    console.log("api:- ",data);
                     return data;
                 }
             } catch (err) {
                 console.error("Error fetching notifications:", err);
             }
 }
+
+
+

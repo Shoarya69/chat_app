@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
 import Fetchdata from "./api_utlits/user_data";
+import Nav_chat_fun from "./chatScreen_comp/nav_bar_chat";
 export default function Nav_chat({id}){
     const [user_name,setname] = useState("");
     
@@ -13,11 +14,12 @@ export default function Nav_chat({id}){
         load();
     },[id])
     return(
-        <div className="w-full flex bg-base-300 items-center">
-            <div className="m-[0.5%] w-15 h-15 border-3 rounded-full">
+        <div className="w-full ">
+            {/* <div className="m-[0.5%] w-15 h-15 border-3 rounded-full">
                 <img src="#" alt="Picture" />
             </div>
-            <div className="m-[0.5%] font-extrabold text-amber-100 text-2xl">{user_name}</div>
+            <div className="m-[0.5%] font-extrabold text-amber-100 text-2xl">{user_name}</div> */}
+            <Nav_chat_fun Name={user_name}/>
         </div>
     );
 }

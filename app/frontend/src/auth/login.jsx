@@ -15,20 +15,25 @@ function Login_page(){
 
   const handleLoginSubmit = async (e) =>{
      e.preventDefault();
-  
-    const data = await loginUser(username,password);
+    try {
+         const data = await loginUser(username,password);
     // console.log(data);
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user_id", username);
-      navigate("/home")
-      toast.success("Login Successful");
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user_id", username);
+          navigate("/home");
+          toast.success("Login Successful");
 
-    } else {
-      toast.error(data.error || "Login Failed");
-    }
-    
+        } else {
+          toast.error(data.error || "Login Failed");
+        }
+        
+        }catch(err){
+          console.err(err);
+          toast.error("Server side error");
+        }
+   
   };
   const togglePassword = () => {
     setShowPassword(!showPassword);

@@ -17,7 +17,7 @@ async def see_friend(tok: str):
         doc = await mongo.user_f.find_one({"user_id" : user_id})
         print(doc)
         if not doc:
-            return {"friends":[]}
+            return {"No_friends":[]}
         
         return {
             "friends": { 

@@ -11,7 +11,7 @@ export default function UserList({ data }) {
               <h2 className="card-title">{u.username}</h2>
               <p>User ID: {u.id}</p>
               <div className={UserListcss.inner_card}>
-                <button className={UserListcss.profile_view}><Link to={`/user/${u.id}`} >View Profile</Link></button>
+                <button className={UserListcss.profile_view}><Link to={`/home/search/user/${u.id}`} >View Profile</Link></button>
               </div>
           </div>
             </div>

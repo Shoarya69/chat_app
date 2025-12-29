@@ -2,6 +2,11 @@ import { Link, useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import isFriend from "./api_utlits/isFriend_op";
+import { useQueryClient } from "@tanstack/react-query";
+
+import Navbar from "@/components/navbar";
+import Footer from "@/components/foter";
+
 export default function UserProfile() {
     const [user_name,setname]= useState("");
     const [isFriendState, setIsFriendState] = useState(false);
@@ -22,6 +27,7 @@ export default function UserProfile() {
     checkFriend();
     }, [id]);
 
+    const queryClient = useQueryClient();
     
 
     const Addfriend = async () =>{
@@ -34,14 +40,29 @@ export default function UserProfile() {
 
     const data = await res.json();
     if (data.error){
-              toast.error("Your session is end please try again");
+              toast.error(data.error);
+              return;
     }
     else if(data.already_fri){
-              toast.info("this is you already friend");
+              toast.info("you are already friends");
     }
     else if(data.Added){
-          toast.success("This is successfullay added as your friend")
+          toast.success("This is successfullay added as your friend");
           setIsFriendState(true);
+          queryClient.setQueryData(["friends", token], (oldData) => {
+          if (!oldData || !oldData.friends) return oldData;
+          if (oldData.friends.user_id.includes(Number(id))) {
+              return oldData;
+            }
+          return {
+            ...oldData,
+            friends: {
+              username: [...oldData.friends.username, user_name],
+              user_id: [...oldData.friends.user_id, Number(id)],
+            },
+          };
+  });
+
     }
     else{
       toast.error("Somting went wrong")
@@ -50,6 +71,8 @@ export default function UserProfile() {
   }
 
   return (
+    <>
+    <Navbar/>
     <div className="p-4 text-white bg-base-100 justify-items-center">
     <div className="h-[50%] w-[20%] bg-gray-900 p-4 rounded-xl flex flex-col items-center gap-3">
 
@@ -77,5 +100,7 @@ export default function UserProfile() {
 
     
   </div>
+  <Footer/>
+  </>
   );
 }

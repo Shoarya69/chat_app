@@ -3,6 +3,8 @@ from app.modles import addFriend_op
 from app.alltocken.tocken_un import verfy_tok
 from app.mogodatabase import mongo
 from app.websocket.manager_12 import manager
+from app.pop_notfication.add_friend_mongo import add_friends_abc
+
 add_f = APIRouter()
 
 @add_f.post("/api/addfriend")
@@ -14,7 +16,9 @@ async def add_friend(add_friend: addFriend_op):
     user_name = playload["sub"]
     if not add_friend.friend_id:
         print("Never resived friend id")
-        return {}
+        return {"error": "Somting went wrong we never reciverd friends id"}
+    if (user_id == add_friend.friend_id):
+        return{"error": "You can not becume friends with self"}
     isAlready_f = await mongo.user_f.find_one({
         "user_id": user_id,
         "friends": add_friend.friend_id
@@ -22,17 +26,10 @@ async def add_friend(add_friend: addFriend_op):
     if isAlready_f:
         return {"already_fri": True}    
 
-    await mongo.user_f.update_one(
-        {"user_id": user_id},
-        {
-            "$addToSet": {  # Duplicate IDs prevent karega
-                "friends": add_friend.friend_id,
-                "frined_username": add_friend.friend_username
-            }
-        },
-        upsert=True  # Document nahi hoga to create karega automatically
-    )
-
+    res = await add_friends_abc(user_id,add_friend.friend_id,add_friend.friend_username)
+    if res['error']:
+        return{"error": "Somting went wrong with database"}
+    
     # delivered = await manager.friend_notfi(to_user_id=add_friend.friend_id,from_user_id=user_id)
     delivered = await add_notfication(add_friend.friend_id,user_id,user_name)
     return {"Added" : True,
@@ -42,15 +39,19 @@ async def add_friend(add_friend: addFriend_op):
 async def add_notfication(to_user_id: str,from_user_id: str,user_name:str):
     try: 
         await mongo.user_n.update_one(
-                    {"user_id" : to_user_id},
-                    {"$push" : {
-                                "frined_request": user_name,
-                                "friend_request_id": from_user_id
-                                }
-                    },
-                    upsert=True
-                )
+            {"user_id": to_user_id},
+            {
+                "$addToSet": {
+                    "friend_requests": {
+                        "id": from_user_id,
+                        "username": user_name
+                    }
+                }
+            },
+            upsert=True
+        )
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
     

@@ -8,7 +8,13 @@ import { toast } from "react-toastify";
 import SendMessage_api from "./api_utlits/sent_message";
 // import WebSocket_api from "./api_utlits/webstock_api";
 import WebSocket_url from "./api_utlits/websocket_url";
-import useWebSocket from "react-use-websocket";
+// import useWebSocket from "react-use-websocket";
+import { useWS } from "@/websocketprovider/websocket";
+import { ChatScreen } from "./chatScreen_comp/chat_screen";
+import Chat_input_btn from "./chatScreen_comp/chat_input";
+
+// import { Query } from "@tanstack/react-query";
+
 export default function Chat(){
     // const [username,setname] = useState("");
     
@@ -61,12 +67,16 @@ export default function Chat(){
     }
   
   ,[id]);
-    const ws_url = WebSocket_url();
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(ws_url, {
-        queryParams: { tok: token },
-        share: true,
-      });
-
+    // const ws_url = WebSocket_url();
+    // const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(ws_url, {
+    //     queryParams: { tok: token },
+    //     share: true,
+    //   });
+      const {
+        sendJsonMessage,
+        lastJsonMessage,
+        readyState,
+      } = useWS();
     useEffect(()=>{
            if (!last_mess) return;
           const ls = last_mess;
@@ -90,9 +100,10 @@ export default function Chat(){
           sender_id: lastJsonMessage.from,
           receiver_id: id,
           message: lastJsonMessage.msg,
-          created_at: lastJsonMessage.created_at,
+          created_at: "Now"
 
         }
+        console.log(msg.created_at);
         console.log(msg);
         console.log(lastJsonMessage);
         if (String(lastJsonMessage.from) === String(id)) {
@@ -110,9 +121,10 @@ export default function Chat(){
       const sent_msg = {
         sender_id: current_id,
         receiver_id: id,
-        message: message
-
+        message: message,
+        created_at: "Now"
       }
+      console.log(sent_msg);
       set_allMessage([... all_message, sent_msg]);
       setLast(message);
       setMessage("");
@@ -132,16 +144,16 @@ export default function Chat(){
 
     const rev_msg = (id_o) =>{
        if (id_o == id){
-        return true;
+        return false;
        }
        else{
-        return false;
+        return true;
        }
     };
 
     return (
   <>
-  <div className="fixed top-0 left-0 w-full h-screen flex flex-col bg-base-100">
+  <div className="fixed top-0 left-0 w-full h-screen flex flex-col bg-base-300">
     <Navbar />
     
     <div className="">
@@ -161,15 +173,10 @@ export default function Chat(){
             <div className="w-full">
               <div className="w-full overflow-y-auto" >
                   {all_message.map((msg, index) => (
-                    <div   className={rev_msg(msg.sender_id) ? "w-full justify-items-start mt-10": "w-full justify-items-end mt-10"}>
-                    <p
-                      key={index}
-                      className={rev_msg(msg.sender_id) ? "border-2 p-2 rounded-2xl border-red-500 mb-5" : "border-2 p-2 rounded-2xl border-green-500 mb-5"}
-                    >
-                      {msg.message}
-                    </p>
-                    
-                    </div>
+                                   
+                    <ChatScreen key={index}  msg={msg.message} sent={rev_msg(msg.sender_id)} ct_at={msg.created_at}/>
+                     
+                 
                   ))}
                    <div ref={bottomRefE} />
               </div>
@@ -178,9 +185,9 @@ export default function Chat(){
           </div>
           </div>
           {/* Form – fixed at bottom inside page */}
-          <div className="mt-auto w-1/2 bg-black text-white flex flex-col rounded-2xl fixed bottom-10">
-            <form onSubmit={sent_mess}  className="flex">
-              <input
+          <div className="mt-auto w-1/2  text-base-100 flex flex-col rounded-2xl fixed bottom-10">
+            <form onSubmit={sent_mess}  className="">
+              {/* <input
                 className="border-2 w-[89.5%] h-20 rounded-l-2xl p-4"
                 type="text"
                 value={message}
@@ -193,9 +200,14 @@ export default function Chat(){
                 className="w-[10%] ml-1 btn btn-primary h-20 border-2 rounded-r-2xl"
               >
                 send
-              </button>
+              </button> */}
+              
             </form>
-
+            <Chat_input_btn
+                  message={message}
+                  setMessage={setMessage}
+                  onSend={sent_mess}
+                />
           </div>
 
         </div>

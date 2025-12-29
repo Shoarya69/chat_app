@@ -16,4 +16,5 @@ class MongoConnect:
         self.user_f = self.db["friends"]
         self.user_c = self.db["chats"]
         self.user_n = self.db['notfication']
+        self.user_u = self.db["user_data"]
 mongo = MongoConnect()

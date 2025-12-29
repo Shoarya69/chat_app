@@ -15,25 +15,30 @@ export default function Register_page(){
     const registerSubmit = async (e) =>{
       e.preventDefault();
 
-      const data = await regiUser(username,password);
+      try{
+        const data = await regiUser(username,password);
 
-      if (data.token){
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user_id", username)
-        nagivate("/home")
-        toast.success("Register Successful");
-      }
-      else if(data.dup){
-        toast.info("this username already exist");
-      }
-      else if(data.error){
-        toast.info("This is server side error. Plz try again sometime later")
-      }
-      else if(data.mis){
-        toast.error(data.mis);
-      }
-      else{
-        toast.error("Somting went Wrong, please try again");
+        if (data.token){
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user_id", username)
+          nagivate("/home")
+          toast.success("Register Successful");
+        }
+        else if(data.dup){
+          toast.info("this username already exist");
+        }
+        else if(data.error){
+          toast.info("This is server side error. Plz try again sometime later")
+        }
+        else if(data.mis){
+          toast.error(data.mis);
+        }
+        else{
+          toast.error("Somting went Wrong, please try again");
+        }
+      }catch(err){
+        console.error(err);
+        toast("Server side error");
       }
     }
     const togglePassword = () => {

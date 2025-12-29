@@ -10,6 +10,12 @@ import Searchbar from './search/search_user';
 import UserProfile from './profile/profile';
 import Notfi from './notfication/notfication';
 import Chat from './chat/cHat';
+import { ProfileScreen } from './profile_edit/profile_edit';
+import WebSocketProvider from './websocketprovider/websocket';
+import Register_2_page from './auth/register_2';
+
+import RegisterScreen from './auth/register_form/regi';
+
 function App() {
 
 
@@ -18,39 +24,39 @@ function App() {
       <ToastContainer position="top-right" autoClose={3000} />
     <BrowserRouter>
           <Routes>
+              
             <Route path='/' element={<Base_page/>} > </Route>
-            <Route path="/home" element={
-              <ProtectedRoute>
-              <Home_page />
-              </ProtectedRoute>
-              } />
-              <Route path='/search' element={
-                <ProtectedRoute>
-                <Searchbar/>
-                </ProtectedRoute>
-                } />
             <Route path="/login" element={<Login_page />} />
-            <Route path="/register" element={<Register_page />} />
-            <Route path="/user/:id" element={
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
-              } />
-           <Route path='/notfi' element={
-                <ProtectedRoute>
-                  <Notfi/>
-                </ProtectedRoute>
-           } />
-           <Route path='home/chat/:id' element={
-                <ProtectedRoute>
-                  <Chat/>
-                  
-                </ProtectedRoute>
-           } />
+            {/* <Route path="/register" element={<Register_2_page />} /> */}
+            <Route path="/register" element={<RegisterScreen />} />
+
           </Routes>
+          
+                <Routes>
+                  
+                 <Route
+                    path="/home/*"
+                    element={
+                      <ProtectedRoute>
+                        <WebSocketProvider>
+                          <Routes>
+                            <Route path="" element={<Home_page />} />
+                            <Route path="search" element={<Searchbar />} />
+                            <Route path="search/user/:id" element={<UserProfile />} />
+                            <Route path="notfi" element={<Notfi />} />
+                            <Route path="chat/:id" element={<Chat />} />
+                            <Route path="prof" element={<ProfileScreen />} />
+                          </Routes>
+                        </WebSocketProvider>
+                      </ProtectedRoute>
+                    }
+/>
+
+                </Routes>
+          
     </BrowserRouter>
     </>
   )
 }
 
-export default App
+export default App;
