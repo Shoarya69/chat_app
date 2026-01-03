@@ -11,6 +11,9 @@ def chat_page(chat_op : chat_op):
     conn = None
     exist = False
     try:
+        if not chat_op.type:
+            chat_op.type = "text"
+        print(chat_op)
         playload = verfy_tok(chat_op.tok)
         if not playload:
             print("your is not in session")
@@ -19,8 +22,8 @@ def chat_page(chat_op : chat_op):
 
         if conn is None:
             return {"error": "Database connection failed"}
-        quary = "INSERT INTO FOC.messages (sender_id,receiver_id,message,created_at) VALUES (%s,%s,%s,%s)"
-        value = (playload["id"],chat_op.friend_id,chat_op.text,datetime.now())
+        quary = "INSERT INTO FOC.messages (sender_id,receiver_id,message,created_at,type) VALUES (%s,%s,%s,%s,%s)"
+        value = (playload["id"],chat_op.friend_id,chat_op.text,datetime.now(),chat_op.type)
         cursor.execute(quary,value)
         exist = True
         return {"Success": True}
@@ -47,7 +50,7 @@ def chat_get(tok: str,friend_id: str):
         cursor,conn = get_cursor()
         user_id = playload["id"]
         quary = """
-            SELECT sender_id, receiver_id, message, created_at
+            SELECT sender_id, receiver_id, message, created_at,type
             FROM FOC.messages
             WHERE (sender_id = %s AND receiver_id = %s)
                OR (sender_id = %s AND receiver_id = %s)
@@ -60,7 +63,8 @@ def chat_get(tok: str,friend_id: str):
             print("There is not message in db")
             return {"NoMs": True}
         return {"message": message,
-                "current_id": user_id}
+                "current_id": user_id,
+                }
     except Exception as e:
         print(e)
         return {"error":True}

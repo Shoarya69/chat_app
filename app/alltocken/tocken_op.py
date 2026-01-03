@@ -1,7 +1,9 @@
 import jwt
 from datetime import datetime, timedelta
-SEC = "mysecreate"
-ALG = "HS256"
+from app.allSecret import jwt_tocken
+SEC = jwt_tocken.SEC
+ALG = jwt_tocken.ALG
+
 
 def create_tocken(user,id):
     expire = datetime.utcnow() + timedelta(hours=1)

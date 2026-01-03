@@ -12,12 +12,16 @@ import WebSocket_url from "./api_utlits/websocket_url";
 import { useWS } from "@/websocketprovider/websocket";
 import { ChatScreen } from "./chatScreen_comp/chat_screen";
 import Chat_input_btn from "./chatScreen_comp/chat_input";
+import Create_url from "./api_utlits/filr_sent_api";
+import Play_load1 from "./playload/play_load1";
+import Play_load2 from "./playload/play_load2";
+
 
 // import { Query } from "@tanstack/react-query";
 
 export default function Chat(){
     // const [username,setname] = useState("");
-    
+    const [file, setFile] = useState(null);
     const [all_message,set_allMessage] = useState([]);
     const [message, setMessage] = useState("");
     const [last_mess,setLast] = useState("");
@@ -114,21 +118,41 @@ export default function Chat(){
   
     const sent_mess = async (e) => {
       e.preventDefault(); // page reload rokne ke liye
-      if (!message){
+      let type = null;
+      let sent_msg = null;
+      if (!message && !file){
         toast("Write Somting to sent");
         return;
       } 
-      const sent_msg = {
-        sender_id: current_id,
-        receiver_id: id,
-        message: message,
-        created_at: "Now"
+      if(message && file){
+        toast.error("This is beta version there for we can not have both file and message sent routes at a time  only oen can go");
+        return ;
+      }
+      if(file && !message){
+        const data = await Create_url(file);
+        if (data.error){
+          toast.error(data.error);
+          return;
+        }
+        else if(data.url){
+          // message = data.url;
+          type = data.type;
+          sent_msg = Play_load2(current_id,id,data.url,type)
+        }
+      }
+      if (message && !file){
+        type = "text"
+        sent_msg = Play_load1(current_id,id,message)
+      }
+
+      if(sent_msg == null){
+        return;
       }
       console.log(sent_msg);
       set_allMessage([... all_message, sent_msg]);
       setLast(message);
       setMessage("");
-      const data = await SendMessage_api(token,id,message);
+      const data = await SendMessage_api(token,id,message,type);
       // yaha fetch ya websocket se message bhejo
       console.log()
       
@@ -186,27 +210,13 @@ export default function Chat(){
           </div>
           {/* Form – fixed at bottom inside page */}
           <div className="mt-auto w-1/2  text-base-100 flex flex-col rounded-2xl fixed bottom-10">
-            <form onSubmit={sent_mess}  className="">
-              {/* <input
-                className="border-2 w-[89.5%] h-20 rounded-l-2xl p-4"
-                type="text"
-                value={message}
-                placeholder="message"
-                onChange={(e) => setMessage(e.target.value)}
-              />
-
-              <button
-                type="submit"
-                className="w-[10%] ml-1 btn btn-primary h-20 border-2 rounded-r-2xl"
-              >
-                send
-              </button> */}
-              
-            </form>
+            
             <Chat_input_btn
                   message={message}
                   setMessage={setMessage}
                   onSend={sent_mess}
+                  file={file}
+                  setFile={setFile}
                 />
           </div>
 

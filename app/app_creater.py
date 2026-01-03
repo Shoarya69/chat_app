@@ -1,6 +1,6 @@
 from fastapi import FastAPI,Depends
 from app.internals.admin import admin
-from app.modules import chat,auth, friends,resister,user,home,addfriend,searchfriend,notfication,email_otp,user_name,mongo_clean,self_profile
+from app.modules import chat,auth, friends,resister,user,home,addfriend,searchfriend,notfication,email_otp,user_name,mongo_clean,self_profile,file_route
 from app.websocket.websocket_12 import ws
 from starlette.middleware.sessions import SessionMiddleware
 from app.modules.error12 import register_exception_handlers
@@ -24,6 +24,8 @@ def web():
     app.include_router(user_name.user_name_c)
     app.include_router(mongo_clean.clean)
     app.include_router(self_profile.self_prof)
+    app.include_router(file_route.file_s)
+
     app.include_router(ws)
     register_exception_handlers(app)
     return app

@@ -19,3 +19,15 @@ class redis_sec():
     redis_password=os.getenv("redis_password")
     redis_port=os.getenv("redis_port")
     redis_db=os.getenv("redis_db")
+
+class mongo_sec():
+    mongo_url=os.getenv("mongo_url")
+
+class cloudnary_sec():
+    name=os.getenv("cloud_name")
+    api_key=os.getenv("cloud_api_key")
+    api_sec=os.getenv("cloud_api_sec")
+
+class jwt_tocken():
+    SEC=os.getenv("SEC")
+    ALG=os.getenv("ALG")

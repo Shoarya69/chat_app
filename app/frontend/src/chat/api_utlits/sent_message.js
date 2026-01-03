@@ -1,4 +1,4 @@
-export default async function SendMessage_api(tok,id,text){
+export default async function SendMessage_api(tok,id,text,type){
         const data = await fetch("/api/chat_save",{method : "POST",
                 headers: {
                      "Content-Type": "application/json"
@@ -7,6 +7,7 @@ export default async function SendMessage_api(tok,id,text){
                 tok : tok,
                 friend_id: id,
                 text: text,
+                type: type,
       })
         });
         const res = await data.json();

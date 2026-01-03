@@ -1,9 +1,9 @@
 import jwt
 from fastapi import HTTPException, Header
 from datetime import datetime
-
-SEC = "mysecreate"
-ALG = "HS256"
+from app.allSecret import jwt_tocken
+SEC = jwt_tocken.SEC
+ALG = jwt_tocken.ALG
 
 def verfy_tok(token : str):
     try:

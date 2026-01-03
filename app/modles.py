@@ -16,7 +16,8 @@ class isFriend_op(BaseModel):
 class chat_op(BaseModel):
     tok: str
     friend_id: str
-    text : str
+    text: str
+    type: str
 
 class chat_get_op(BaseModel):
     tok: str

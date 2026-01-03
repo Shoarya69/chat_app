@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-
+from app.allSecret import mongo_sec
 class User(BaseModel):
     name: str
     age: int
@@ -8,7 +8,7 @@ class User(BaseModel):
 
 class MongoConnect:
     def __init__(self):
-        uri = "mongodb://localhost:27017/"
+        uri = mongo_sec.mongo_url
         self.client = AsyncIOMotorClient(uri)
         self.db = self.client["chat_app"]
 
